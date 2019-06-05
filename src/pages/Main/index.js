@@ -1,129 +1,72 @@
-import React, { Component } from 'react';
-import moment from 'moment';
+import React, { useState, useEffect } from "react";
+import { bindActionCreators } from "redux";
 
-import Logo from '../../assets/logo.png';
+import { Creators as RepositoriesActions } from "../../store/ducks/repositories";
 
-import { Container, Form } from './styles';
+import Logo from "../../assets/logo.png";
 
-import api from '../../services/api';
+import { Container, Form } from "./styles";
 
-import CompareList from '../../components/CompareList';
+import CompareList from "../../components/CompareList";
+import { connect } from "react-redux";
 
-export default class Main extends Component {
-  constructor(props) {
-    super(props);
+const Main = ({
+  repositories: { error: repositoryError, loading, list: repositories },
+  ...props
+}) => {
+  const [repositoryInput, handleChangeRepository] = useState("");
 
-    const repositories = JSON.parse(localStorage.getItem('repositories')) || [];
-
-    console.log('repositories: ', repositories);
-
-    this.state = {
-      loading: false,
-      repositoryInput: '',
-      repositoryError: false,
-      repositories,
-    };
-  }
-
-  handleChangeRepository = ({ target }) => {
-    this.setState({
-      repositoryInput: target.value,
-    });
-  };
-
-  handleAddRepository = async event => {
+  const getRepositoriePromise = event => {
     event.preventDefault();
+    props.getRepositorie(repositoryInput);
 
-    this.setState({ loading: true });
+    handleChangeRepository("");
+  };
 
-    try {
-      const { data: repository } = await api.get(`/repos/${this.state.repositoryInput}`);
-
-      repository.lastCommit = moment(repository.pushed_at).fromNow();
-
-      this.setState(
-        {
-          repositories: [...this.state.repositories, repository],
-          repositoryInput: '',
-          repositoryError: false,
-        },
-        () => {
-          localStorage.setItem('repositories', JSON.stringify(this.state.repositories));
-        },
-      );
-    } catch (err) {
-      this.setState({
-        repositoryError: true,
-      });
-    } finally {
-      this.setState({ loading: false });
+  useEffect(() => {
+    if (!repositories.lenght) {
+      props.getRepositories();
     }
-  };
+  }, []);
 
-  removeRepository = id => {
-    const { repositories } = this.state;
-    const newRepositories = repositories.filter(repository => repository.id !== id);
+  return (
+    <Container>
+      <img src={Logo} alt="Github Compare" />
 
-    this.setState(
-      {
-        repositories: newRepositories,
-      },
-      () => {
-        localStorage.setItem('repositories', JSON.stringify(newRepositories));
-      },
-    );
-  };
-
-  updateRepository = async id => {
-    const repositoryLocal = this.state.repositories.filter(repository => repository.id === id)[0];
-
-    this.setState({ loading: true });
-
-    try {
-      const { data: repository } = await api.get(`/repos/${repositoryLocal.full_name}`);
-      const repositories = this.state.repositories.filter(repos => repos.id !== repository.id);
-
-      this.setState(
-        {
-          repositories: [...repositories, repository],
-        },
-        () => {
-          localStorage.setItem('repositories', JSON.stringify(this.state.repositories));
-        },
-      );
-    } catch (err) {
-      this.setState({
-        repositoryError: false,
-      });
-    } finally {
-      this.setState({ loading: false });
-    }
-  };
-
-  render() {
-    const { repositories, repositoryInput, repositoryError, loading } = this.state;
-
-    return (
-      <Container>
-        <img src={Logo} alt="Github Compare" />
-
-        <Form onSubmit={this.handleAddRepository} withError={repositoryError}>
-          <input
-            type="text"
-            placeholder="user/repository"
-            value={repositoryInput}
-            onChange={this.handleChangeRepository}
-          />
-          <button type="submit">{loading ? <i className="fa fa-spinner fa-pulse" /> : 'OK'}</button>
-        </Form>
-
-        <CompareList
-          repositories={repositories}
-          removeRepository={this.removeRepository}
-          updateRepository={this.updateRepository}
-          loading={loading}
+      <Form onSubmit={getRepositoriePromise} withError={repositoryError}>
+        <input
+          type="text"
+          placeholder="user/repository"
+          value={repositoryInput}
+          onChange={({ target }) => handleChangeRepository(target.value)}
         />
-      </Container>
-    );
-  }
-}
+        <button type="submit">
+          {loading ? <i className="fa fa-spinner fa-pulse" /> : "OK"}
+        </button>
+      </Form>
+
+      <CompareList
+        repositories={repositories}
+        removeRepository={id => props.removeRepositorie(id)}
+        loading={loading}
+      />
+    </Container>
+  );
+};
+
+const mapStateToProps = ({ repositories }) => ({ repositories });
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      getRepositorie: RepositoriesActions.getRepositorie,
+      removeRepositorie: RepositoriesActions.removeRepositorie,
+      getRepositories: RepositoriesActions.getRepositories
+    },
+    dispatch
+  );
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Main);

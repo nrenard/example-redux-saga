@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { Container, Repository, Buttons } from './styles';
+import { Container, Repository, Buttons } from "./styles";
 
 const CompareList = ({ repositories, loading, ...props }) => (
   <Container>
@@ -9,9 +9,8 @@ const CompareList = ({ repositories, loading, ...props }) => (
       <Repository key={repository.id}>
         <header>
           <Buttons>
-            <button onClick={props.removeRepository.bind(null, repository.id)}>Remover</button>
-            <button onClick={props.updateRepository.bind(null, repository.id)}>
-              {loading ? <i className="fa fa-spinner fa-pulse" /> : 'Atualizar'}
+            <button onClick={props.removeRepository.bind(null, repository.id)}>
+              Remover
             </button>
           </Buttons>
           <img src={repository.owner.avatar_url} alt={repository.owner.login} />
@@ -21,24 +20,16 @@ const CompareList = ({ repositories, loading, ...props }) => (
 
         <ul>
           <li>
-            {repository.stargazers_count}
-            {' '}
-            <small>stars</small>
+            {repository.stargazers_count} <small>stars</small>
           </li>
           <li>
-            {repository.forks_count}
-            {' '}
-            <small>forks</small>
+            {repository.forks_count} <small>forks</small>
           </li>
           <li>
-            {repository.open_issues_count}
-            {' '}
-            <small>issues</small>
+            {repository.open_issues_count} <small>issues</small>
           </li>
           <li>
-            {repository.lastCommit}
-            {' '}
-            <small>last commit</small>
+            {repository.lastCommit} <small>last commit</small>
           </li>
         </ul>
       </Repository>
@@ -53,14 +44,14 @@ CompareList.propType = {
       name: PropTypes.string,
       owner: PropTypes.shape({
         login: PropTypes.string,
-        avatar_url: PropTypes.string,
+        avatar_url: PropTypes.string
       }),
       stargazers_count: PropTypes.number,
       forks_count: PropTypes.number,
       open_issues_count: PropTypes.number,
-      pushed_at: PropTypes.string,
-    }),
-  ).isRequired,
+      pushed_at: PropTypes.string
+    })
+  ).isRequired
 };
 
 export default CompareList;
