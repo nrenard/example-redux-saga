@@ -1,2 +1,1 @@
-export * from "./repositories/actions";
-export * from "./loading/actions";
+export * from "./repository/actions";

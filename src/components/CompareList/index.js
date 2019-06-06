@@ -10,9 +10,6 @@ const CompareList = ({ repositories, loading, ...props }) => (
         <header>
           <Buttons>
             <button onClick={props.removeRepository.bind(null, repository.id)}>Remover</button>
-            <button onClick={props.updateRepository.bind(null, repository.id)}>
-              {loading ? <i className="fa fa-spinner fa-pulse" /> : 'Atualizar'}
-            </button>
           </Buttons>
           <img src={repository.owner.avatar_url} alt={repository.owner.login} />
           <strong>{repository.name}</strong>
