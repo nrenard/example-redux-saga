@@ -10,7 +10,7 @@ import {
 
 const localStorageMemory = "repositories";
 
-export function* setRepositorie({ payload }) {
+export function* setRepository({ payload }) {
   const {
     repositories: { list: repositories }
   } = yield select(state => state);
@@ -23,36 +23,34 @@ export function* setRepositorie({ payload }) {
     }
 
     data.lastCommit = moment(data.pushed_at).fromNow();
-
     repositories.push(data);
-    localStorage.setItem(localStorageMemory, JSON.stringify(repositories));
 
     yield put(RepositoriesActions.setRepositories(repositories));
   } catch (err) {
     console.log("err: ", err);
-    yield put(RepositoriesActions.getRepositorieError());
+    yield put(RepositoriesActions.getRepositoryError());
   }
 }
 
-export function* removeRepositorie({ payload }) {
-  const {
-    repositories: { list }
-  } = yield select(state => state);
-  const repositories = list.filter(repository => repository.id !== payload.id);
-
-  localStorage.setItem(localStorageMemory, JSON.stringify(repositories));
-}
-
-export function* getRepositories() {
+export function* rehydrateRepositories() {
   const repositories =
     JSON.parse(localStorage.getItem(localStorageMemory)) || [];
   yield put(RepositoriesActions.setRepositories(repositories));
 }
 
+export function* updateLocalStorage() {
+  const {
+    repositories: { list }
+  } = yield select(state => state);
+
+  localStorage.setItem(localStorageMemory, JSON.stringify(list));
+}
+
 export default function* userSaga() {
   yield all([
-    takeLatest(RepositoriesTypes.GET_REPOSITORIE, setRepositorie),
-    takeLatest(RepositoriesTypes.GET_REPOSITORIES, getRepositories),
-    takeLatest(RepositoriesTypes.REMOVE_REPOSITORIE, removeRepositorie)
+    takeLatest(RepositoriesTypes.GET_REPOSITORY, setRepository),
+    takeLatest(RepositoriesTypes.REHYDRATE_REPOSITORIES, rehydrateRepositories),
+    takeLatest(RepositoriesTypes.REMOVE_REPOSITORY, updateLocalStorage),
+    takeLatest(RepositoriesTypes.SET_REPOSITORIES, updateLocalStorage)
   ]);
 }
