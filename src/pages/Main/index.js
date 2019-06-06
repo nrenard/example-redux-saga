@@ -16,7 +16,7 @@ const Main = ({
 }) => {
   const [repositoryInput, handleChangeRepository] = useState("");
 
-  const getRepositoriePromise = event => {
+  const getRepositoryPromise = event => {
     event.preventDefault();
     props.getRepository(repositoryInput);
 
@@ -24,16 +24,14 @@ const Main = ({
   };
 
   useEffect(() => {
-    if (!repositories.lenght) {
-      props.getRepositories();
-    }
+    props.rehydrateRepositories();
   }, []);
 
   return (
     <Container>
       <img src={Logo} alt="Github Compare" />
 
-      <Form onSubmit={getRepositoriePromise} withError={repositoryError}>
+      <Form onSubmit={getRepositoryPromise} withError={repositoryError}>
         <input
           type="text"
           placeholder="user/repository"
@@ -61,7 +59,7 @@ const mapDispatchToProps = dispatch =>
     {
       getRepository: RepositoriesActions.getRepository,
       removeRepository: RepositoriesActions.removeRepository,
-      getRepositories: RepositoriesActions.getRepositories
+      rehydrateRepositories: RepositoriesActions.rehydrateRepositories
     },
     dispatch
   );

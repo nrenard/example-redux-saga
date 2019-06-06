@@ -1,8 +1,9 @@
 export const Types = {
   GET_REPOSITORY: "repositories/GET_REPOSITORY",
+  GET_REPOSITORY_SUCCESS: "repositories/GET_REPOSITORY_SUCCESS",
   GET_REPOSITORY_ERROR: "repositories/GET_REPOSITORY_ERROR",
   REMOVE_REPOSITORY: "repositories/REMOVE_REPOSITORY",
-  GET_REPOSITORIES: "repositories/GET_REPOSITORIES",
+  REHYDRATE_REPOSITORIES: "repositories/REHYDRATE_REPOSITORIES",
   SET_REPOSITORIES: "repositories/SET_REPOSITORIES"
 };
 
@@ -13,15 +14,24 @@ const INITIAL_STATE = {
 };
 
 export const Creators = {
-  getRepository: payload => ({ type: Types.GET_REPOSITORY, payload }),
+  getRepository: id => ({ type: Types.GET_REPOSITORY, payload: id }),
 
-  getRepositoryError: () => ({ type: Types.GET_REPOSITORY_ERROR }),
+  getRepositorySuccess: repository => ({
+    type: Types.GET_REPOSITORY_SUCCESS,
+    payload: repository
+  }),
 
-  getRepositories: () => ({ type: Types.GET_REPOSITORIES }),
+  getRepositoryError: error => ({
+    type: Types.GET_REPOSITORY_ERROR,
+    payload: error,
+    error: true
+  }),
 
-  setRepositories: respositories => ({
+  rehydrateRepositories: () => ({ type: Types.REHYDRATE_REPOSITORIES }),
+
+  setRepositories: repositories => ({
     type: Types.SET_REPOSITORIES,
-    payload: { respositories }
+    payload: { repositories }
   }),
 
   removeRepository: id => ({ type: Types.REMOVE_REPOSITORY, payload: { id } })
@@ -32,6 +42,15 @@ export default function user(state = INITIAL_STATE, { type, payload }) {
     case Types.GET_REPOSITORY:
       return { ...state, loading: true, error: false };
 
+    case Types.GET_REPOSITORY_SUCCESS:
+      return {
+        list: state.list
+          .filter(repository => repository.id !== payload.id)
+          .concat(payload),
+        loading: false,
+        error: false
+      };
+
     case Types.GET_REPOSITORY_ERROR:
       return { ...state, loading: false, error: true };
 
@@ -40,7 +59,7 @@ export default function user(state = INITIAL_STATE, { type, payload }) {
         ...state,
         loading: false,
         error: false,
-        list: payload.respositories
+        list: payload.repositories
       };
 
     case Types.REMOVE_REPOSITORY:
