@@ -18,7 +18,7 @@ const Main = ({
 
   const getRepositoriePromise = event => {
     event.preventDefault();
-    props.getRepositorie(repositoryInput);
+    props.getRepository(repositoryInput);
 
     handleChangeRepository("");
   };
@@ -47,7 +47,7 @@ const Main = ({
 
       <CompareList
         repositories={repositories}
-        removeRepository={id => props.removeRepositorie(id)}
+        removeRepository={id => props.removeRepository(id)}
         loading={loading}
       />
     </Container>
@@ -59,8 +59,8 @@ const mapStateToProps = ({ repositories }) => ({ repositories });
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      getRepositorie: RepositoriesActions.getRepositorie,
-      removeRepositorie: RepositoriesActions.removeRepositorie,
+      getRepository: RepositoriesActions.getRepository,
+      removeRepository: RepositoriesActions.removeRepository,
       getRepositories: RepositoriesActions.getRepositories
     },
     dispatch

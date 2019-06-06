@@ -1,11 +1,9 @@
 export const Types = {
-  GET_REPOSITORIE: "respostories/GET_REPOSITORIE",
-  GET_REPOSITORIE_ERROR: "respostories/GET_REPOSITORIE_ERROR",
-
-  REMOVE_REPOSITORIE: "respostories/REMOVE_REPOSITORIE",
-
-  GET_REPOSITORIES: "respostories/GET_REPOSITORIES",
-  SET_REPOSITORIES: "respostories/SET_REPOSITORIES"
+  GET_REPOSITORY: "repositories/GET_REPOSITORY",
+  GET_REPOSITORY_ERROR: "repositories/GET_REPOSITORY_ERROR",
+  REMOVE_REPOSITORY: "repositories/REMOVE_REPOSITORY",
+  GET_REPOSITORIES: "repositories/GET_REPOSITORIES",
+  SET_REPOSITORIES: "repositories/SET_REPOSITORIES"
 };
 
 const INITIAL_STATE = {
@@ -15,9 +13,9 @@ const INITIAL_STATE = {
 };
 
 export const Creators = {
-  getRepositorie: payload => ({ type: Types.GET_REPOSITORIE, payload }),
+  getRepository: payload => ({ type: Types.GET_REPOSITORY, payload }),
 
-  getRepositorieError: () => ({ type: Types.GET_REPOSITORIE_ERROR }),
+  getRepositoryError: () => ({ type: Types.GET_REPOSITORY_ERROR }),
 
   getRepositories: () => ({ type: Types.GET_REPOSITORIES }),
 
@@ -26,15 +24,15 @@ export const Creators = {
     payload: { respositories }
   }),
 
-  removeRepositorie: id => ({ type: Types.REMOVE_REPOSITORIE, payload: { id } })
+  removeRepository: id => ({ type: Types.REMOVE_REPOSITORY, payload: { id } })
 };
 
 export default function user(state = INITIAL_STATE, { type, payload }) {
   switch (type) {
-    case Types.GET_REPOSITORIE:
+    case Types.GET_REPOSITORY:
       return { ...state, loading: true, error: false };
 
-    case Types.GET_REPOSITORIE_ERROR:
+    case Types.GET_REPOSITORY_ERROR:
       return { ...state, loading: false, error: true };
 
     case Types.SET_REPOSITORIES:
@@ -45,7 +43,7 @@ export default function user(state = INITIAL_STATE, { type, payload }) {
         list: payload.respositories
       };
 
-    case Types.REMOVE_REPOSITORIE:
+    case Types.REMOVE_REPOSITORY:
       return {
         ...state,
         list: state.list.filter(repo => repo.id !== payload.id)

@@ -8,7 +8,7 @@ import {
 
 const localStorageMemory = "repositories";
 
-export function* setRepositorie({ payload }) {
+export function* setRepository({ payload }) {
   const {
     repositories: { list }
   } = yield select(state => state);
@@ -23,11 +23,11 @@ export function* setRepositorie({ payload }) {
 
     yield put(RepositoriesActions.setRepositories(repositories));
   } catch (err) {
-    yield put(RepositoriesActions.getRepositorieError());
+    yield put(RepositoriesActions.getRepositoryError());
   }
 }
 
-export function* removeRepositorie({ payload }) {
+export function* removeRepository({ payload }) {
   const {
     repositories: { list }
   } = yield select(state => state);
@@ -44,8 +44,8 @@ export function* getRepositories() {
 
 export default function* userSaga() {
   yield all([
-    takeLatest(RepositoriesTypes.GET_REPOSITORIE, setRepositorie),
+    takeLatest(RepositoriesTypes.GET_REPOSITORY, setRepository),
     takeLatest(RepositoriesTypes.GET_REPOSITORIES, getRepositories),
-    takeLatest(RepositoriesTypes.REMOVE_REPOSITORIE, removeRepositorie)
+    takeLatest(RepositoriesTypes.REMOVE_REPOSITORY, removeRepository)
   ]);
 }
