@@ -1,6 +1,5 @@
 export const Types = {
   GET_REPOSITORY: "repositories/GET_REPOSITORY",
-  GET_REPOSITORY_SUCCESS: "repositories/GET_REPOSITORY_SUCCESS",
   GET_REPOSITORY_ERROR: "repositories/GET_REPOSITORY_ERROR",
   REMOVE_REPOSITORY: "repositories/REMOVE_REPOSITORY",
   REHYDRATE_REPOSITORIES: "repositories/REHYDRATE_REPOSITORIES",
@@ -15,11 +14,6 @@ const INITIAL_STATE = {
 
 export const Creators = {
   getRepository: id => ({ type: Types.GET_REPOSITORY, payload: id }),
-
-  getRepositorySuccess: repository => ({
-    type: Types.GET_REPOSITORY_SUCCESS,
-    payload: repository
-  }),
 
   getRepositoryError: error => ({
     type: Types.GET_REPOSITORY_ERROR,
@@ -41,15 +35,6 @@ export default function user(state = INITIAL_STATE, { type, payload }) {
   switch (type) {
     case Types.GET_REPOSITORY:
       return { ...state, loading: true, error: false };
-
-    case Types.GET_REPOSITORY_SUCCESS:
-      return {
-        list: state.list
-          .filter(repository => repository.id !== payload.id)
-          .concat(payload),
-        loading: false,
-        error: false
-      };
 
     case Types.GET_REPOSITORY_ERROR:
       return { ...state, loading: false, error: true };
