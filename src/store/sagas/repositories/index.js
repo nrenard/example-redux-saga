@@ -1,4 +1,6 @@
 import { all, takeLatest, call, put, select } from "redux-saga/effects";
+import moment from "moment";
+
 import api from "../../../services/api";
 
 import {
@@ -10,19 +12,24 @@ const localStorageMemory = "repositories";
 
 export function* setRepositorie({ payload }) {
   const {
-    repositories: { list }
+    repositories: { list: repositories }
   } = yield select(state => state);
 
   try {
     const { data } = yield call(api.get, `/repos/${payload}`);
 
-    const repositories = list.filter(repository => repository.id !== data.id);
+    if (repositories.find(repository => repository.id === data.id)) {
+      throw new Error("Repository already exists.");
+    }
+
+    data.lastCommit = moment(data.pushed_at).fromNow();
 
     repositories.push(data);
     localStorage.setItem(localStorageMemory, JSON.stringify(repositories));
 
     yield put(RepositoriesActions.setRepositories(repositories));
   } catch (err) {
+    console.log("err: ", err);
     yield put(RepositoriesActions.getRepositorieError());
   }
 }
