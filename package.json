@@ -14,7 +14,7 @@
     "redux": "^4.0.1",
     "redux-saga": "^1.0.2",
     "saga": "^4.0.0-alpha",
-    "serve": "^10.1.1",
+    "serve": "^10.1.2",
     "styled-components": "^4.1.2"
   },
   "scripts": {
